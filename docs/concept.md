@@ -16,6 +16,7 @@ Replace the existing task management app with a wine cellar inventory manager bu
 - **Delete wines** from the collection
 - **Filter** by type (Red, White, Rosé, etc.), status (In Cellar, Consumed, Wishlist), or search by name/producer
 - **Region map** — interactive SVG map of French wine regions that highlights regions with wines in the cellar; click a region to filter
+- **Internationalization** — Full English/French support with language switcher; auto-detects browser language
 - **Stats overview** — total bottles, cellar value, breakdown by type
 
 ## Target User

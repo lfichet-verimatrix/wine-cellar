@@ -175,22 +175,49 @@ This implementation plan breaks the design into discrete coding tasks. Each task
   - Delete the old task frontend files: `client/src/pages/TaskDashboard.jsx`, `TaskDashboard.module.css`, `client/src/components/tasks/` directory.
   - *Ref: Design — Vite Proxy Configuration, Summary of Changes*
 
-## 11. Frontend: Styling and Polish
+## 11. Frontend: Internationalization (i18n)
 
-- [ ] **11.1 Update global styles and design tokens**
+- [ ] **11.1 Create the i18n infrastructure**
+  - Create `client/src/i18n/en.js` with all English translation strings organized by category (app, actions, stats, types, statuses, filters, form fields, placeholders, validation errors, empty states, map).
+  - Create `client/src/i18n/fr.js` with matching French translations.
+  - Create `client/src/i18n/index.jsx` with `I18nProvider` (React context), `useI18n` hook, `t(key, params)` function with template replacement, localStorage persistence, and browser language auto-detection.
+  - Wrap `App.jsx` with `I18nProvider`.
+  - *Ref: Requirement 1.7 (all acceptance criteria)*
+
+- [ ] **11.2 Extract all hardcoded strings to translation keys**
+  - Update all components (WineDashboard, StatsPanel, WineCard, FilterBar, WineForm, WineMap) to use `useI18n()` and `t()` for every user-facing string.
+  - Replace hardcoded type/status labels with `t('type.Red')`, `t('status.In Cellar')` etc.
+  - Replace validation error messages with translated equivalents using parameterized keys where needed.
+  - *Ref: Requirement 1.7 (acceptance criteria 3)*
+
+- [ ] **11.3 Create the LanguageSwitcher component**
+  - Create `client/src/components/ui/LanguageSwitcher.jsx` and `LanguageSwitcher.module.css`.
+  - Render toggle buttons for each available locale (🇬🇧 EN / 🇫🇷 FR).
+  - Use `aria-pressed` for accessibility.
+  - Place in the dashboard header.
+  - *Ref: Requirement 1.7 (acceptance criteria 2)*
+
+- [ ] **11.4 Update document title on language change**
+  - In `I18nProvider`, set `document.title` to the current locale's `appTitle` on init and on locale change.
+  - Also set `document.documentElement.lang` to the current locale.
+  - *Ref: Requirement 1.7 (acceptance criteria 6, 7)*
+
+## 12. Frontend: Styling and Polish
+
+- [ ] **12.1 Update global styles and design tokens**
   - In `client/src/styles/global.css`: update the page title/meta (if any inline comments reference "tasks"). Optionally add wine-themed color tokens (e.g., `--color-wine-red`, `--color-wine-white`) for type badges.
   - Ensure all new components use the existing design system variables (spacing, shadows, radii, typography).
   - *Ref: Requirement 4.1 (responsive, 375px–1920px), Design — CSS Modules*
 
-- [ ] **11.2 Ensure responsive layout**
+- [ ] **12.2 Ensure responsive layout**
   - Verify `WineDashboard` layout works from 375px to 1920px. Use CSS grid/flexbox with appropriate breakpoints.
   - WineCard grid: 1 column on mobile, 2 on tablet, 3 on desktop.
   - Form fields: stack vertically on mobile, 2-column grid on wider screens for shorter fields (vintage, quantity, price, rating).
   - *Ref: Requirement 4.1 (responsive 375px–1920px)*
 
-## 12. End-to-End Verification
+## 13. End-to-End Verification
 
-- [ ] **12.1 Run the full app and verify all flows**
+- [ ] **13.1 Run the full app and verify all flows**
   - Start MongoDB, run `npm run seed` to populate sample data, start backend (`npm run dev`), start frontend (`cd client && npm run dev`).
   - Verify in browser:
     - Dashboard loads with wines and correct stats.
@@ -198,6 +225,10 @@ This implementation plan breaks the design into discrete coding tasks. Each task
     - Clicking a region filters the wine list to that region and its sub-regions.
     - Clicking the same region or the clear button removes the filter.
     - Region filter works in combination with type, status, and search filters.
+    - Language switcher toggles between English and French.
+    - All labels, buttons, placeholders, and validation messages update on language change.
+    - Browser tab title updates on language change.
+    - Selected language persists after page reload.
     - Filtering by type, status, and search works (AND logic).
     - Clearing filters restores full list.
     - Add wine: form validates, creates, appears in list, stats update.
@@ -208,16 +239,16 @@ This implementation plan breaks the design into discrete coding tasks. Each task
   - Fix any issues discovered.
   - *Ref: All requirements (end-to-end validation)*
 
-## 13. Testing Setup and Tests
+## 14. Testing Setup and Tests
 
-- [ ] **13.1 Set up backend testing infrastructure**
+- [ ] **14.1 Set up backend testing infrastructure**
   - Install dev dependencies: `jest`, `supertest`, `mongodb-memory-server`.
   - Add jest config to `package.json` (or `jest.config.js`). Configure test environment for Node.
   - Add `"test": "jest"` script to `package.json`.
   - Create a test helper (`tests/setup.js`) that connects/disconnects from in-memory MongoDB before/after all tests.
   - *Ref: Design — Testing Strategy*
 
-- [ ] **13.2 Write backend integration tests**
+- [ ] **14.2 Write backend integration tests**
   - Create `tests/wines.test.js` (or `tests/routes/wines.test.js`).
   - Tests:
     - `POST /wines` — creates wine with valid data (201), rejects missing required fields (400), rejects invalid types (400).
@@ -227,13 +258,13 @@ This implementation plan breaks the design into discrete coding tasks. Each task
     - `DELETE /wines/:id` — deletes wine (200), returns 404 for missing ID.
   - *Ref: Requirement 3.1 (all API acceptance criteria), Design — Testing Strategy*
 
-- [ ] **13.3 Set up frontend testing infrastructure**
+- [ ] **14.3 Set up frontend testing infrastructure**
   - Install dev dependencies in client: `vitest`, `@testing-library/react`, `@testing-library/jest-dom`, `jsdom`.
   - Add vitest config (in `vite.config.js` or `vitest.config.js`). Set test environment to `jsdom`.
   - Add `"test": "vitest"` script to `client/package.json`.
   - *Ref: Design — Testing Strategy*
 
-- [ ] **13.4 Write frontend component tests**
+- [ ] **14.4 Write frontend component tests**
   - Create tests for key components:
     - `WineForm.test.jsx` — validates required fields, submits valid data, pre-populates in edit mode, shows submission errors.
     - `WineCard.test.jsx` — renders wine info, calls onEdit/onDelete.

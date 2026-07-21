@@ -29,6 +29,14 @@ graph TD
         M --> N[FranceRegionsSVG]
         M --> O[regionData.js]
         A --> F[UI Components: Button, Modal, Input, Textarea, Badge, Select]
+        A --> LS[LanguageSwitcher]
+        I18N[I18nProvider + useI18n] --> A
+        I18N --> B
+        I18N --> C
+        I18N --> D
+        I18N --> E
+        I18N --> M
+        I18N --> LS
     end
 
     subgraph Server [Express 5 - Node.js]
@@ -73,7 +81,8 @@ The frontend is a single-page app with one dashboard page:
 |-------|---------|---------------|
 | Page | `client/src/pages/WineDashboard.jsx` | Orchestrates state, fetches data, renders layout |
 | Feature components | `client/src/components/wines/` | WineCard, WineForm, FilterBar, StatsPanel, WineMap, FranceRegionsSVG, regionData |
-| UI components | `client/src/components/ui/` | Button, Modal, Input, Textarea, Badge, Select (new) |
+| UI components | `client/src/components/ui/` | Button, Modal, Input, Textarea, Badge, Select, LanguageSwitcher |
+| i18n | `client/src/i18n/` | I18nProvider context, useI18n hook, translation files (en.js, fr.js) |
 | API service | `client/src/services/winesApi.js` | Fetch wrapper for all wine endpoints |
 | Styles | CSS Modules (`.module.css` per component) | Scoped styling using design system variables |
 
@@ -361,6 +370,48 @@ The text index supports the `search` query parameter via MongoDB's `$text` opera
 ### Seed Data
 
 A new seed script (`scripts/seed.js`) will be updated to insert sample wines instead of tasks. A `wines.json` seed file will replace the `taks` file.
+
+---
+
+## Internationalization (i18n)
+
+### Architecture
+
+The app uses a custom lightweight i18n system (no external library) consisting of:
+
+| File | Purpose |
+|------|---------|
+| `client/src/i18n/en.js` | English translation strings (~110 keys) |
+| `client/src/i18n/fr.js` | French translation strings (~110 keys) |
+| `client/src/i18n/index.jsx` | `I18nProvider` context + `useI18n` hook |
+
+### Design Decisions
+
+- **No external library** — The app has a small, fixed set of strings. A context-based approach avoids bundle overhead from libraries like react-i18next.
+- **Simple template syntax** — `t('key', { name: value })` replaces `{name}` placeholders in strings.
+- **Persistence** — Selected locale is stored in `localStorage` under `wine-cellar-lang`.
+- **Auto-detection** — On first visit, uses `navigator.language` to pick a locale if supported.
+- **Document updates** — Changing locale also updates `document.title` and `document.documentElement.lang`.
+
+### `useI18n` Hook API
+
+```js
+const { locale, setLocale, t, locales } = useI18n();
+// locale: 'en' | 'fr'
+// setLocale: (newLocale) => void
+// t: (key, params?) => string
+// locales: ['en', 'fr']
+```
+
+### LanguageSwitcher Component
+
+A toggle button group (`🇬🇧 EN` / `🇫🇷 FR`) placed in the dashboard header. Uses `aria-pressed` for accessibility.
+
+### Translation Key Convention
+
+- Simple keys: `appTitle`, `addWine`, `cancel`
+- Namespaced keys: `type.Red`, `status.In Cellar`, `field.name`, `placeholder.name`, `error.nameRequired`
+- Parameterized: `deleteConfirm` → `Delete "{name}"?`, `error.vintageRange` → `...between 1900 and {max}`
 
 ---
 

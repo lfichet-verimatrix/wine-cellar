@@ -9,6 +9,7 @@ A personal wine cellar management app built with the MERN stack (MongoDB, Expres
 - **Interactive Map** — SVG map of French wine regions (generated from real geographic data); click a region to filter wines
 - **Region Mapping** — Sub-regions/appellations are mapped to parent regions (e.g., "Haut-Médoc" → Bordeaux)
 - **Stats Panel** — Total bottles, cellar value, breakdown by type
+- **Internationalization** — English/French support with language switcher (auto-detects browser language)
 - **Draggable Modals** — Edit/create forms can be repositioned by dragging the header
 
 ## Tech Stack

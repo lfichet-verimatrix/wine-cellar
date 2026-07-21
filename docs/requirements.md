@@ -66,6 +66,20 @@ This document defines the requirements for a simple wine cellar inventory manage
 6. The region filter shall work in combination with existing type, status, and search filters (AND logic).
 7. The map shall display a legend indicating the meaning of highlighted vs. non-highlighted regions.
 
+### 1.7 Internationalization
+
+**User Story:** As a cellar owner, I want the application to be available in English and French, so that I can use it in my preferred language.
+
+**Acceptance Criteria:**
+
+1. The system shall support two languages: English (en) and French (fr).
+2. The system shall display a language switcher in the application header allowing the user to toggle between languages.
+3. When the user switches language, all user-facing text (labels, buttons, placeholders, validation messages, empty states) shall update immediately without page reload.
+4. The system shall persist the selected language in localStorage so it is remembered across sessions.
+5. When no language is stored, the system shall auto-detect the browser's preferred language and default to it if supported, otherwise default to English.
+6. When the language changes, the browser tab title shall update to reflect the current language ("Wine Cellar" in English, "Cave à Vins" in French).
+7. The `<html>` element's `lang` attribute shall update to match the selected locale.
+
 ### 1.4 Edit a Wine
 
 **User Story:** As a cellar owner, I want to edit a wine's details, so that I can update quantity, notes, or fix errors.
