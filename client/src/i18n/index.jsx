@@ -21,13 +21,19 @@ function getInitialLocale() {
 }
 
 export function I18nProvider({ children }) {
-  const [locale, setLocaleState] = useState(getInitialLocale);
+  const [locale, setLocaleState] = useState(() => {
+    const initial = getInitialLocale();
+    document.documentElement.lang = initial;
+    document.title = translations[initial].appTitle;
+    return initial;
+  });
 
   const setLocale = useCallback((newLocale) => {
     if (translations[newLocale]) {
       setLocaleState(newLocale);
       localStorage.setItem(STORAGE_KEY, newLocale);
       document.documentElement.lang = newLocale;
+      document.title = translations[newLocale].appTitle;
     }
   }, []);
 
