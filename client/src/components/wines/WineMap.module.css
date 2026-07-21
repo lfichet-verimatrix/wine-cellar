@@ -1,0 +1,132 @@
+.mapContainer {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.mapTitle {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0;
+  align-self: flex-start;
+}
+
+.mapWrapper {
+  width: 100%;
+  max-width: 400px;
+  margin: var(--space-sm) 0;
+}
+
+.mapWrapper svg {
+  width: 100%;
+  height: auto;
+}
+
+/* Region path default styles */
+.mapWrapper :global(.region) {
+  fill: #e2e8f0;
+  stroke: #94a3b8;
+  stroke-width: 1;
+  cursor: pointer;
+  transition: fill var(--transition-fast), stroke var(--transition-fast), transform var(--transition-fast);
+}
+
+.mapWrapper :global(.region):hover {
+  fill: #cbd5e1;
+  stroke: #64748b;
+  stroke-width: 1.5;
+}
+
+/* Active region (has wines) */
+.mapWrapper :global(.region.active) {
+  fill: #7c2d12;
+  stroke: #9a3412;
+  stroke-width: 1.2;
+  opacity: 0.75;
+}
+
+.mapWrapper :global(.region.active):hover {
+  fill: #9a3412;
+  stroke: #7c2d12;
+  opacity: 1;
+}
+
+/* Selected region (currently filtering) */
+.mapWrapper :global(.region.selected) {
+  fill: #6366f1;
+  stroke: #4338ca;
+  stroke-width: 2;
+  opacity: 1;
+  filter: drop-shadow(0 2px 4px rgba(99, 102, 241, 0.4));
+}
+
+.mapWrapper :global(.region.selected):hover {
+  fill: #4f46e5;
+}
+
+/* France outline */
+.mapWrapper :global(.france-outline) {
+  pointer-events: none;
+}
+
+/* Region labels */
+.mapWrapper :global(.region-label) {
+  font-size: 8px;
+  font-weight: 500;
+  fill: #475569;
+  text-anchor: middle;
+  pointer-events: none;
+  user-select: none;
+}
+
+.clearBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-xs) var(--space-sm);
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-full);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.clearBtn:hover {
+  background: var(--color-primary);
+  color: white;
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.legendActive,
+.legendInactive {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+}
+
+.legendActive {
+  background: #7c2d12;
+}
+
+.legendInactive {
+  background: #e2e8f0;
+  border: 1px solid #94a3b8;
+}

@@ -1,0 +1,34 @@
+.filterBar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.filters {
+  display: grid;
+  grid-template-columns: 180px 180px 1fr;
+  gap: var(--space-sm);
+  flex: 1;
+  min-width: 0;
+}
+
+@media (max-width: 768px) {
+  .filters {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .filters > :last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 480px) {
+  .filters {
+    grid-template-columns: 1fr;
+  }
+
+  .filters > :last-child {
+    grid-column: auto;
+  }
+}

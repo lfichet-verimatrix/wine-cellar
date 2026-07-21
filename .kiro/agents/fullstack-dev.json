@@ -1,0 +1,74 @@
+{
+  "name": "fullstack-dev",
+  "description": "Full-stack MERN development agent with MongoDB, Playwright, fetch, and Context7 tools",
+  "prompt": "You are a full-stack MERN developer. You build APIs with Express and MongoDB, and frontends with React. Follow RESTful conventions, validate inputs, use structured logging, and return consistent response formats. You have access to MongoDB for database inspection, Playwright for browser testing, fetch for HTTP requests, and Context7 for library documentation lookup.",
+  "tools": [
+    "read",
+    "write",
+    "shell",
+    "grep",
+    "glob",
+    "code",
+    "todo_list",
+    "knowledge"
+  ],
+  "allowedTools": [
+    "read",
+    "grep",
+    "glob",
+    "code",
+    "@mongodb-mcp-server",
+    "@context7",
+    "@fetch"
+  ],
+  "toolsSettings": {
+    "shell": {
+      "allowedCommands": [
+        "npm .*",
+        "node .*",
+        "npx .*",
+        "curl .*",
+        "git status",
+        "git diff",
+        "git log.*",
+        "git branch.*",
+        "cat .*",
+        "ls .*",
+        "mkdir .*"
+      ],
+      "autoAllowReadonly": true
+    }
+  },
+  "resources": [
+    "file://src/**/*",
+    "file://package.json",
+    "file://taks",
+    "file://.kiro/steering/backend.md",
+    "file://.kiro/steering/frontend.md"
+  ],
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": ["@playwright/mcp@latest", "--browser", "firefox"],
+      "disabledTools": []
+    },
+    "fetch": {
+      "command": "uvx",
+      "args": ["mcp-server-fetch"],
+      "env": {}
+    },
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp"]
+    },
+    "mongodb-mcp-server": {
+      "command": "npx",
+      "args": ["-y", "mongodb-mcp-server@latest", "--readOnly"],
+      "env": {
+        "MDB_MC_CONNECTION_STRING": "mongodb://localhost:27017"
+      }
+    }
+  },
+  "keyboardShortcut": "ctrl+shift+f",
+  "welcomeMessage": "Full-stack MERN agent ready. I have access to MongoDB, Playwright, fetch, and Context7. What would you like to build?"
+}
