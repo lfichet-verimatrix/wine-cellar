@@ -3,22 +3,8 @@ import Input from '../ui/Input';
 import Textarea from '../ui/Textarea';
 import Select from '../ui/Select';
 import Button from '../ui/Button';
+import { useI18n } from '../../i18n';
 import styles from './WineForm.module.css';
-
-const WINE_TYPES = [
-  { value: 'Red', label: 'Red' },
-  { value: 'White', label: 'White' },
-  { value: 'Rosé', label: 'Rosé' },
-  { value: 'Sparkling', label: 'Sparkling' },
-  { value: 'Dessert', label: 'Dessert' },
-  { value: 'Fortified', label: 'Fortified' },
-];
-
-const WINE_STATUSES = [
-  { value: 'In Cellar', label: 'In Cellar' },
-  { value: 'Consumed', label: 'Consumed' },
-  { value: 'Wishlist', label: 'Wishlist' },
-];
 
 const currentYear = new Date().getFullYear();
 
@@ -29,9 +15,25 @@ const currentYear = new Date().getFullYear();
  * - `onCancel` closes the form/modal.
  */
 export default function WineForm({ wine = null, onSubmit, onCancel }) {
+  const { t } = useI18n();
   const isEditing = wine !== null;
   const [isPending, startTransition] = useTransition();
   const [errors, setErrors] = useState({});
+
+  const WINE_TYPES = [
+    { value: 'Red', label: t('type.Red') },
+    { value: 'White', label: t('type.White') },
+    { value: 'Rosé', label: t('type.Rosé') },
+    { value: 'Sparkling', label: t('type.Sparkling') },
+    { value: 'Dessert', label: t('type.Dessert') },
+    { value: 'Fortified', label: t('type.Fortified') },
+  ];
+
+  const WINE_STATUSES = [
+    { value: 'In Cellar', label: t('status.In Cellar') },
+    { value: 'Consumed', label: t('status.Consumed') },
+    { value: 'Wishlist', label: t('status.Wishlist') },
+  ];
 
   const [formData, setFormData] = useState({
     name: wine?.name || '',
@@ -59,75 +61,64 @@ export default function WineForm({ wine = null, onSubmit, onCancel }) {
   function validate() {
     const newErrors = {};
 
-    // Name - required, max 200
     if (!formData.name.trim()) {
-      newErrors.name = 'Name is required';
+      newErrors.name = t('error.nameRequired');
     } else if (formData.name.length > 200) {
-      newErrors.name = 'Name cannot exceed 200 characters';
+      newErrors.name = t('error.nameMax');
     }
 
-    // Producer - required, max 200
     if (!formData.producer.trim()) {
-      newErrors.producer = 'Producer is required';
+      newErrors.producer = t('error.producerRequired');
     } else if (formData.producer.length > 200) {
-      newErrors.producer = 'Producer cannot exceed 200 characters';
+      newErrors.producer = t('error.producerMax');
     }
 
-    // Vintage - optional, integer 1900–currentYear+1
     if (formData.vintage) {
       const v = Number(formData.vintage);
       if (!Number.isInteger(v) || v < 1900 || v > currentYear + 1) {
-        newErrors.vintage = `Vintage must be between 1900 and ${currentYear + 1}`;
+        newErrors.vintage = t('error.vintageRange', { max: currentYear + 1 });
       }
     }
 
-    // Type - required
     if (!formData.type) {
-      newErrors.type = 'Type is required';
+      newErrors.type = t('error.typeRequired');
     }
 
-    // Grape - optional, max 200
     if (formData.grape.length > 200) {
-      newErrors.grape = 'Grape cannot exceed 200 characters';
+      newErrors.grape = t('error.grapeMax');
     }
 
-    // Region - optional, max 200
     if (formData.region.length > 200) {
-      newErrors.region = 'Region cannot exceed 200 characters';
+      newErrors.region = t('error.regionMax');
     }
 
-    // Country - optional, max 100
     if (formData.country.length > 100) {
-      newErrors.country = 'Country cannot exceed 100 characters';
+      newErrors.country = t('error.countryMax');
     }
 
-    // Quantity - integer >= 0
     if (formData.quantity !== '') {
       const q = Number(formData.quantity);
       if (!Number.isInteger(q) || q < 0) {
-        newErrors.quantity = 'Quantity must be a non-negative integer';
+        newErrors.quantity = t('error.quantityInvalid');
       }
     }
 
-    // Price - optional, number >= 0
     if (formData.price !== '') {
       const p = Number(formData.price);
       if (isNaN(p) || p < 0) {
-        newErrors.price = 'Price must be a non-negative number';
+        newErrors.price = t('error.priceInvalid');
       }
     }
 
-    // Rating - optional, integer 1–5
     if (formData.rating !== '') {
       const r = Number(formData.rating);
       if (!Number.isInteger(r) || r < 1 || r > 5) {
-        newErrors.rating = 'Rating must be between 1 and 5';
+        newErrors.rating = t('error.ratingInvalid');
       }
     }
 
-    // Notes - optional, max 2000
     if (formData.notes.length > 2000) {
-      newErrors.notes = 'Notes cannot exceed 2000 characters';
+      newErrors.notes = t('error.notesMax');
     }
 
     setErrors(newErrors);
@@ -185,8 +176,8 @@ export default function WineForm({ wine = null, onSubmit, onCancel }) {
         <Input
           id="wine-name"
           name="name"
-          label="Name"
-          placeholder="e.g. Château Margaux 2015"
+          label={t('field.name')}
+          placeholder={t('placeholder.name')}
           value={formData.name}
           onChange={handleChange}
           error={errors.name}
@@ -196,8 +187,8 @@ export default function WineForm({ wine = null, onSubmit, onCancel }) {
         <Input
           id="wine-producer"
           name="producer"
-          label="Producer"
-          placeholder="e.g. Château Margaux"
+          label={t('field.producer')}
+          placeholder={t('placeholder.producer')}
           value={formData.producer}
           onChange={handleChange}
           error={errors.producer}
@@ -209,8 +200,8 @@ export default function WineForm({ wine = null, onSubmit, onCancel }) {
         <Select
           id="wine-type"
           name="type"
-          label="Type"
-          placeholder="Select type..."
+          label={t('field.type')}
+          placeholder={t('placeholder.type')}
           options={WINE_TYPES}
           value={formData.type}
           onChange={handleChange}
@@ -220,9 +211,9 @@ export default function WineForm({ wine = null, onSubmit, onCancel }) {
         <Input
           id="wine-vintage"
           name="vintage"
-          label="Vintage"
+          label={t('field.vintage')}
           type="number"
-          placeholder="e.g. 2020"
+          placeholder={t('placeholder.vintage')}
           value={formData.vintage}
           onChange={handleChange}
           error={errors.vintage}
@@ -235,8 +226,8 @@ export default function WineForm({ wine = null, onSubmit, onCancel }) {
         <Input
           id="wine-grape"
           name="grape"
-          label="Grape Variety"
-          placeholder="e.g. Cabernet Sauvignon"
+          label={t('field.grape')}
+          placeholder={t('placeholder.grape')}
           value={formData.grape}
           onChange={handleChange}
           error={errors.grape}
@@ -244,8 +235,8 @@ export default function WineForm({ wine = null, onSubmit, onCancel }) {
         <Input
           id="wine-region"
           name="region"
-          label="Region"
-          placeholder="e.g. Bordeaux"
+          label={t('field.region')}
+          placeholder={t('placeholder.region')}
           value={formData.region}
           onChange={handleChange}
           error={errors.region}
@@ -256,8 +247,8 @@ export default function WineForm({ wine = null, onSubmit, onCancel }) {
         <Input
           id="wine-country"
           name="country"
-          label="Country"
-          placeholder="e.g. France"
+          label={t('field.country')}
+          placeholder={t('placeholder.country')}
           value={formData.country}
           onChange={handleChange}
           error={errors.country}
@@ -265,7 +256,7 @@ export default function WineForm({ wine = null, onSubmit, onCancel }) {
         <Select
           id="wine-status"
           name="status"
-          label="Status"
+          label={t('field.status')}
           options={WINE_STATUSES}
           value={formData.status}
           onChange={handleChange}
@@ -276,9 +267,9 @@ export default function WineForm({ wine = null, onSubmit, onCancel }) {
         <Input
           id="wine-quantity"
           name="quantity"
-          label="Quantity"
+          label={t('field.quantity')}
           type="number"
-          placeholder="1"
+          placeholder={t('placeholder.quantity')}
           value={formData.quantity}
           onChange={handleChange}
           error={errors.quantity}
@@ -287,9 +278,9 @@ export default function WineForm({ wine = null, onSubmit, onCancel }) {
         <Input
           id="wine-price"
           name="price"
-          label="Price"
+          label={t('field.price')}
           type="number"
-          placeholder="0.00"
+          placeholder={t('placeholder.price')}
           value={formData.price}
           onChange={handleChange}
           error={errors.price}
@@ -299,9 +290,9 @@ export default function WineForm({ wine = null, onSubmit, onCancel }) {
         <Input
           id="wine-rating"
           name="rating"
-          label="Rating (1–5)"
+          label={t('field.rating')}
           type="number"
-          placeholder="—"
+          placeholder={t('placeholder.rating')}
           value={formData.rating}
           onChange={handleChange}
           error={errors.rating}
@@ -313,8 +304,8 @@ export default function WineForm({ wine = null, onSubmit, onCancel }) {
       <Textarea
         id="wine-notes"
         name="notes"
-        label="Notes"
-        placeholder="Tasting notes, pairing suggestions..."
+        label={t('field.notes')}
+        placeholder={t('placeholder.notes')}
         value={formData.notes}
         onChange={handleChange}
         error={errors.notes}
@@ -323,10 +314,10 @@ export default function WineForm({ wine = null, onSubmit, onCancel }) {
 
       <div className={styles.actions}>
         <Button variant="secondary" onClick={onCancel} type="button">
-          Cancel
+          {t('cancel')}
         </Button>
         <Button variant="primary" type="submit" loading={isPending}>
-          {isEditing ? 'Update Wine' : 'Add Wine'}
+          {isEditing ? t('updateWine') : t('addWineSubmit')}
         </Button>
       </div>
     </form>

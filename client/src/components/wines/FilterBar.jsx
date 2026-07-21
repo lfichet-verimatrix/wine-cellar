@@ -1,26 +1,29 @@
 import Input from '../ui/Input';
 import Select from '../ui/Select';
 import Button from '../ui/Button';
+import { useI18n } from '../../i18n';
 import styles from './FilterBar.module.css';
 
-const WINE_TYPES = [
-  { value: '', label: 'All Types' },
-  { value: 'Red', label: 'Red' },
-  { value: 'White', label: 'White' },
-  { value: 'Rosé', label: 'Rosé' },
-  { value: 'Sparkling', label: 'Sparkling' },
-  { value: 'Dessert', label: 'Dessert' },
-  { value: 'Fortified', label: 'Fortified' },
-];
-
-const WINE_STATUSES = [
-  { value: '', label: 'All Statuses' },
-  { value: 'In Cellar', label: 'In Cellar' },
-  { value: 'Consumed', label: 'Consumed' },
-  { value: 'Wishlist', label: 'Wishlist' },
-];
-
 export default function FilterBar({ filters, onFilterChange }) {
+  const { t } = useI18n();
+
+  const WINE_TYPES = [
+    { value: '', label: t('allTypes') },
+    { value: 'Red', label: t('type.Red') },
+    { value: 'White', label: t('type.White') },
+    { value: 'Rosé', label: t('type.Rosé') },
+    { value: 'Sparkling', label: t('type.Sparkling') },
+    { value: 'Dessert', label: t('type.Dessert') },
+    { value: 'Fortified', label: t('type.Fortified') },
+  ];
+
+  const WINE_STATUSES = [
+    { value: '', label: t('allStatuses') },
+    { value: 'In Cellar', label: t('status.In Cellar') },
+    { value: 'Consumed', label: t('status.Consumed') },
+    { value: 'Wishlist', label: t('status.Wishlist') },
+  ];
+
   const hasActiveFilters = filters.type || filters.status || filters.search;
 
   function handleChange(e) {
@@ -41,7 +44,7 @@ export default function FilterBar({ filters, onFilterChange }) {
           options={WINE_TYPES}
           value={filters.type}
           onChange={handleChange}
-          aria-label="Filter by type"
+          aria-label={t('field.type')}
         />
         <Select
           id="filter-status"
@@ -49,20 +52,20 @@ export default function FilterBar({ filters, onFilterChange }) {
           options={WINE_STATUSES}
           value={filters.status}
           onChange={handleChange}
-          aria-label="Filter by status"
+          aria-label={t('field.status')}
         />
         <Input
           id="filter-search"
           name="search"
-          placeholder="Search by name or producer..."
+          placeholder={t('searchPlaceholder')}
           value={filters.search}
           onChange={handleChange}
-          aria-label="Search wines"
+          aria-label={t('searchPlaceholder')}
         />
       </div>
       {hasActiveFilters && (
         <Button variant="ghost" size="sm" onClick={handleClear}>
-          ✕ Clear filters
+          {t('clearFilters')}
         </Button>
       )}
     </nav>

@@ -6,11 +6,14 @@ import StatsPanel from '../components/wines/StatsPanel';
 import WineMap from '../components/wines/WineMap';
 import Modal from '../components/ui/Modal';
 import Button from '../components/ui/Button';
+import LanguageSwitcher from '../components/ui/LanguageSwitcher';
 import { getRegionFilterValues } from '../components/wines/regionData';
+import { useI18n } from '../i18n';
 import * as api from '../services/winesApi';
 import styles from './WineDashboard.module.css';
 
 export default function WineDashboard() {
+  const { t } = useI18n();
   const [wines, setWines] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -76,12 +79,15 @@ export default function WineDashboard() {
       {/* Header */}
       <header className={styles.header}>
         <div>
-          <h1 className={styles.title}>🍷 Wine Cellar</h1>
-          <p className={styles.subtitle}>Manage your personal wine collection</p>
+          <h1 className={styles.title}>🍷 {t('appTitle')}</h1>
+          <p className={styles.subtitle}>{t('appSubtitle')}</p>
         </div>
-        <Button variant="primary" size="lg" onClick={() => setShowCreateModal(true)}>
-          + Add Wine
-        </Button>
+        <div className={styles.headerActions}>
+          <LanguageSwitcher />
+          <Button variant="primary" size="lg" onClick={() => setShowCreateModal(true)}>
+            {t('addWine')}
+          </Button>
+        </div>
       </header>
 
       {/* Stats */}
@@ -102,7 +108,7 @@ export default function WineDashboard() {
         {loading && (
           <div className={styles.emptyState}>
             <div className={styles.loader} />
-            <p>Loading wines...</p>
+            <p>{t('loadingWines')}</p>
           </div>
         )}
 
@@ -110,7 +116,7 @@ export default function WineDashboard() {
           <div className={styles.errorState} role="alert">
             <p>⚠️ {error}</p>
             <Button variant="secondary" onClick={loadWines}>
-              Retry
+              {t('retry')}
             </Button>
           </div>
         )}
@@ -119,16 +125,16 @@ export default function WineDashboard() {
           <div className={styles.emptyState}>
             <span className={styles.emptyIcon}>🍷</span>
             <p className={styles.emptyTitle}>
-              {hasActiveFilters ? 'No wines match your filters' : 'Your cellar is empty'}
+              {hasActiveFilters ? t('noWinesMatch') : t('cellarEmpty')}
             </p>
             <p className={styles.emptySubtitle}>
               {hasActiveFilters
-                ? 'Try adjusting or clearing your filters.'
-                : 'Add your first wine to get started!'}
+                ? t('tryAdjustingFilters')
+                : t('addFirstWinePrompt')}
             </p>
             {!hasActiveFilters && (
               <Button variant="primary" onClick={() => setShowCreateModal(true)}>
-                + Add Your First Wine
+                {t('addFirstWine')}
               </Button>
             )}
           </div>
@@ -152,7 +158,7 @@ export default function WineDashboard() {
       <Modal
         isOpen={showCreateModal}
         onClose={() => setShowCreateModal(false)}
-        title="Add New Wine"
+        title={t('addNewWine')}
       >
         <WineForm
           onSubmit={handleCreate}
@@ -164,7 +170,7 @@ export default function WineDashboard() {
       <Modal
         isOpen={editingWine !== null}
         onClose={() => setEditingWine(null)}
-        title="Edit Wine"
+        title={t('editWine')}
       >
         {editingWine && (
           <WineForm

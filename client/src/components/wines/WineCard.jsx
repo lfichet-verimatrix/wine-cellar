@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Badge from '../ui/Badge';
 import Button from '../ui/Button';
+import { useI18n } from '../../i18n';
 import styles from './WineCard.module.css';
 
 const TYPE_VARIANTS = {
@@ -18,10 +19,10 @@ const STATUS_VARIANTS = {
   Wishlist: 'warning',
 };
 
-function RatingStars({ rating }) {
+function RatingStars({ rating, label }) {
   if (!rating) return <span className={styles.noRating}>—</span>;
   return (
-    <span className={styles.stars} aria-label={`${rating} out of 5 stars`}>
+    <span className={styles.stars} aria-label={label}>
       {Array.from({ length: 5 }, (_, i) => (
         <span key={i} className={i < rating ? styles.starFilled : styles.starEmpty}>
           ★
@@ -32,10 +33,11 @@ function RatingStars({ rating }) {
 }
 
 export default function WineCard({ wine, onEdit, onDelete }) {
+  const { t } = useI18n();
   const [isPending, setIsPending] = useState(false);
 
   async function handleDelete() {
-    if (!window.confirm(`Delete "${wine.name}"?`)) return;
+    if (!window.confirm(t('deleteConfirm', { name: wine.name }))) return;
     setIsPending(true);
     try {
       await onDelete(wine._id);
@@ -47,12 +49,12 @@ export default function WineCard({ wine, onEdit, onDelete }) {
   return (
     <article
       className={`${styles.card} ${isPending ? styles.pending : ''}`}
-      aria-label={`Wine: ${wine.name}`}
+      aria-label={`${t('field.name')}: ${wine.name}`}
     >
       <div className={styles.header}>
         <div className={styles.badges}>
-          <Badge variant={TYPE_VARIANTS[wine.type] || 'default'}>{wine.type}</Badge>
-          <Badge variant={STATUS_VARIANTS[wine.status] || 'default'}>{wine.status}</Badge>
+          <Badge variant={TYPE_VARIANTS[wine.type] || 'default'}>{t(`type.${wine.type}`)}</Badge>
+          <Badge variant={STATUS_VARIANTS[wine.status] || 'default'}>{t(`status.${wine.status}`)}</Badge>
         </div>
         {wine.vintage && <span className={styles.vintage}>{wine.vintage}</span>}
       </div>
@@ -74,21 +76,21 @@ export default function WineCard({ wine, onEdit, onDelete }) {
 
         <div className={styles.meta}>
           <span className={styles.quantity}>
-            {wine.quantity} {wine.quantity === 1 ? 'bottle' : 'bottles'}
+            {wine.quantity} {wine.quantity === 1 ? t('bottle') : t('bottles')}
           </span>
           {wine.price != null && (
             <span className={styles.price}>€{wine.price.toFixed(2)}</span>
           )}
-          <RatingStars rating={wine.rating} />
+          <RatingStars rating={wine.rating} label={t('ratingLabel', { rating: wine.rating })} />
         </div>
       </div>
 
       <div className={styles.actions}>
         <Button variant="ghost" size="sm" onClick={() => onEdit(wine)}>
-          ✏️ Edit
+          {t('edit')}
         </Button>
         <Button variant="ghost" size="sm" onClick={handleDelete}>
-          🗑️ Delete
+          {t('delete')}
         </Button>
       </div>
     </article>
